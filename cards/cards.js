@@ -10,6 +10,7 @@ var skills = [
       "Short",
       "Damage"
     ],
+    target: "Module",
     description: "Can repair shorts and/or damaged parts.",
   },
   
@@ -17,13 +18,15 @@ var skills = [
     character: "Engineer",
     name: "Cannibalize",
     slots: [],
-    description: "Damages a Module and generates a new Equipment card."
+    target: "Equipment",
+    description: "Damages a Module, but generates a new Equipment card."
   },
   
   {
     character: "Engineer",
     name: "MacGyver",
     slots: [],
+    target: "Equipment",
     description: "Turns an Equipment card into a different Equipment card."
   }
 ];
@@ -33,6 +36,7 @@ var equipment = [
     name: "Extinguisher",
     slots: ["Fire"],
     description: "Puts out a fire.",
+    target: "Module",
     image: "FireExtinguisher"
   },
   
@@ -40,6 +44,7 @@ var equipment = [
     name: "Patch Kit",
     slots: ["Damage"],
     description: "Repairs damaged stuff.",
+    target: "Module",
     image: ""
   },
   
@@ -47,6 +52,15 @@ var equipment = [
     name: "Electrical Kit",
     slots: ["Short"],
     description: "Repairs electrical shorts.",
+    target: "Module",
+    image: ""
+  },
+  
+  {
+    name: "3D Printer",
+    slots: [],
+    description: "Becomes an Equipment card that can solve a current Crisis.",
+    target: "Equipment",
     image: ""
   }
 ];
@@ -71,20 +85,22 @@ var crises = [
 ];
 
 if (Meteor.isServer) {
-  Meteor.startup(function () {
-    // Clear
-    Skills.remove({});
-    Equipment.remove({});
-    Crises.remove({});
-    // Populate
-    skills.map(function (skill) {
-      Skills.insert(skill);
-    });
-    equipment.map(function (item) {
-      Equipment.insert(item);
-    });
-    crises.map(function (crisis) {
-      Crises.insert(crisis);
-    });
+  Meteor.methods({
+    new_cards: function () {
+      // Clear
+      Skills.remove({});
+      Equipment.remove({});
+      Crises.remove({});
+      // Populate
+      skills.map(function (skill) {
+        Skills.insert(skill);
+      });
+      equipment.map(function (item) {
+        Equipment.insert(item);
+      });
+      crises.map(function (crisis) {
+        Crises.insert(crisis);
+      });
+    }
   });
 }

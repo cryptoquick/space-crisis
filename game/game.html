@@ -1,4 +1,11 @@
 <template name="game">
-  {{>board}}
-  {{>cards_list}}
+  <button class="reset_game">Reset Game</button>
+  {{log game}}
+  {{#unless game.game_started}}
+    {{>start_screen}}
+  {{else}}
+    {{>board}}
+    {{>skill_list}}
+    {{>equipment_list}}
+  {{/unless}}
 </template>

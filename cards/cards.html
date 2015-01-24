@@ -1,13 +1,13 @@
-<template name="cards_list">
+<template name="skill_list">
   {{#each skills}}
     {{>skill_card}}
   {{/each}}
-  <!--{{#each equipment}}
+</template>
+
+<template name="equipment_list">
+  {{#each equipment}}
     {{>equipment_card}}
   {{/each}}
-  {{#each crises}}
-    {{>crisis_event}}
-  {{/each}} !-->
 </template>
 
 <template name="skill_card">
@@ -22,11 +22,6 @@
   <div class="card equipment">
     <h1>{{name}}</h1>
     <img src="equipment/{{image}}.png">
-    <p>Slots:
-      {{#each slots}}
-        {{this}}
-      {{/each}}
-    </p>
     <p>{{description}}</p>
   </div>
 </template>
