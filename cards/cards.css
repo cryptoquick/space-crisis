@@ -16,12 +16,9 @@
   top: 5px; */
 }
 
-.crisis {
-  background-color: #e74c3c;
-}
-
-.equipment {
-  background-color: #3498db;
+.card #highlighted {
+  border: 2px solid blue;
+  border-radius: 5px;
 }
 
 .skill {

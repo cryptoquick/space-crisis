@@ -1,22 +1,32 @@
-<template name="module">
-  <div class="module">
-    <h1>{{module_name}}</h1>
-    <ul>
-      {{#each equipment}}
-        <li>
-          {{>module_equipment}}
-        </li>
-      {{/each}}
-    </ul>
-  </div>
-</template>
-
-<template name="module_equipment">
-  <button>{{name}}</button>
-</template>
-
 <template name="board">
   {{#each modules}}
     {{>module}}
   {{/each}}
+</template>
+
+<template name="module">
+  <div class="module card">
+    <img src="modules/{{image}}.png"/>
+    {{#if has_crisis}}
+      {{>crisis}}
+    {{/if}}
+  </div>
+  {{#if clicked}}
+    <div class="module details">
+      <h2>Points: {{points}}</h2>
+      {{print_equipment}}
+    </div>
+  {{/if}}
+</template>
+
+<template name="crisis">
+  <div class="crisis">
+    <img src="modules/Crisis.png"/>
+  </div>
+  {{#if clicked}}
+    {{>crisis_details}}
+  {{/if}}
+</template>
+
+<template name="crisis_details">
 </template>

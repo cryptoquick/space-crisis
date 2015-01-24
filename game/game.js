@@ -3,30 +3,13 @@ Game = new Mongo.Collection("game");
 if (Meteor.isServer) {
   Meteor.methods({
     init_game: function () {
-      // 1. Initialize the game state (turn number, which character the player is using)
-      // 2. Initialize the player's skills based on their class.
-      //    This list of AvailableSkills should then be the collection that is iterated through in cards.html
-      
-      Game.insert({
-        game: global_settings.game_id,
+      var game_id = Game.insert({
         game_started: false,
         players: 0,
         turn_count: 0,
         turn_maximum: 10
       });
-      
-//       var player_settings = new ReactiveDict();
-//       player_settings.set("character", "Engineer");
-//       var player_skills = Skills.find({character: "Engineer"}).fetch();
-//       var skills_count = 0;
-//       AvailableSkills = new Mongo.Collection("available_skills");
-//       player_skills.forEach(function(skill) {
-//         AvailableSkills.insert(skill);
-//         skills_count++;
-//         if (skills_count == 2) {
-//           return;
-//         }
-//       });
+      Meteor.call('init_players', game_id);
     },
     
     quit_games: function () {
@@ -44,14 +27,30 @@ if (Meteor.isClient) {
     },
     log: function (item) {
       console.log(item);
+    },
+    game_started: function () {
+      var player_id = Session.get('player_id');
+      if (player_id) {
+        var player = Players.findOne(player_id);
+        if (player) {
+          var game = Game.findOne(player.game);
+          return game.game_started;
+        }
+        else {
+          return false;
+        }
+      }
+      else {
+        return false;
+      }
     }
   });
   
   Template.game.events({
     "click .reset_game": function () {
-      Meteor.call('new_players');
       Meteor.call('quit_games');
-      Meteor.call('init_game');
+      Meteor.call('reset_players');
+      Session.set('message', '');
     }
   });
 }

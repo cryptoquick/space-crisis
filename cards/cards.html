@@ -11,7 +11,7 @@
 </template>
 
 <template name="skill_card">
-  <div class="card skill">
+  <div class="card skill {{clicked}}">
     <h1>{{name}}</h1>
     <img src="skills/{{image}}.png">
     <p>{{description}}</p>
@@ -19,7 +19,7 @@
 </template>
 
 <template name="equipment_card">
-  <div class="card equipment">
+  <div class="card equipment {{clicked}}">
     <h1>{{name}}</h1>
     <img src="equipment/{{image}}.png">
     <p>{{description}}</p>

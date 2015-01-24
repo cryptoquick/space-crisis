@@ -1,7 +1,7 @@
 <template name="game">
   <button class="reset_game">Reset Game</button>
-  {{log game}}
-  {{#unless game.game_started}}
+  {{show_message}}
+  {{#unless game_started}}
     {{>start_screen}}
   {{else}}
     {{>board}}

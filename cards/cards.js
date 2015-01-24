@@ -1,6 +1,5 @@
 Skills = new Mongo.Collection("skills");
 Equipment = new Mongo.Collection("equipment");
-Crises = new Mongo.Collection("crises");
 
 var skills = [
   {
@@ -10,7 +9,7 @@ var skills = [
       "Short",
       "Damage"
     ],
-    target: "Module",
+    target: "Crisis",
     description: "Can repair shorts and/or damaged parts.",
   },
   
@@ -18,7 +17,7 @@ var skills = [
     character: "Engineer",
     name: "Cannibalize",
     slots: [],
-    target: "Equipment",
+    target: "Module",
     description: "Damages a Module, but generates a new Equipment card."
   },
   
@@ -28,6 +27,46 @@ var skills = [
     slots: [],
     target: "Equipment",
     description: "Turns an Equipment card into a different Equipment card."
+  },
+  
+  {
+    character: "Engineer",
+    name: "Quick Fix",
+    slots: [],
+    target: "Module",
+    description: "Completely solves a Crisis, but next turn the Module is on fire."
+  },
+  
+  {
+    character: "Pilot",
+    name: "Reverse Engineer",
+    slots: [],
+    target: "Module",
+    description: "Change a Module into another random Module."
+  },
+  
+  {
+    character: "Pilot",
+    name: "Jettison",
+    slots: [],
+    target: "Module",
+    description: "Destroy a Module completely."
+  },
+  
+  {
+    character: "Pilot",
+    name: "Evacuate",
+    slots: ["Fire"],
+    target: "Crisis",
+    description: "Suffocates Fires but may cause a Wall Breach."
+  },
+  
+  {
+    character: "Pilot",
+    name: "Return",
+    slots: [],
+    target: "Module",
+    description: "Returns your Equipment to their Modules."
   }
 ];
 
@@ -36,7 +75,7 @@ var equipment = [
     name: "Extinguisher",
     slots: ["Fire"],
     description: "Puts out a fire.",
-    target: "Module",
+    target: "Crisis",
     image: "FireExtinguisher"
   },
   
@@ -44,7 +83,7 @@ var equipment = [
     name: "Patch Kit",
     slots: ["Damage"],
     description: "Repairs damaged stuff.",
-    target: "Module",
+    target: "Crisis",
     image: ""
   },
   
@@ -52,7 +91,7 @@ var equipment = [
     name: "Electrical Kit",
     slots: ["Short"],
     description: "Repairs electrical shorts.",
-    target: "Module",
+    target: "Crisis",
     image: ""
   },
   
@@ -60,46 +99,23 @@ var equipment = [
     name: "3D Printer",
     slots: [],
     description: "Becomes an Equipment card that can solve a current Crisis.",
-    target: "Equipment",
+    target: "",
     image: ""
-  }
-];
-
-var crises = [
-  {
-    name: "Electrical Fire",
-    turns: "2",
-    slots: [
-      "Fire",
-      "Short"
-    ]
-  },
-  
-  {
-    name: "Hull Damage",
-    turns: "3",
-    slots: [
-      "Damage"
-    ]
   }
 ];
 
 if (Meteor.isServer) {
   Meteor.methods({
-    new_cards: function () {
+    init_cards: function () {
       // Clear
       Skills.remove({});
       Equipment.remove({});
-      Crises.remove({});
       // Populate
       skills.map(function (skill) {
         Skills.insert(skill);
       });
       equipment.map(function (item) {
         Equipment.insert(item);
-      });
-      crises.map(function (crisis) {
-        Crises.insert(crisis);
       });
     }
   });

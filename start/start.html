@@ -1,13 +1,38 @@
 <template name="start_screen">
-  <div class="start">
-    <div class="players">
-      {{#each players}}
-        {{>start_player}}
-      {{/each}}
-    </div>
+  <h1>Space Crisis 1972</h1>
+  <button class="new_game">New Game</button>
+  {{>games_list}}
+</template>
+
+<template name="games_list">
+  <div class="games">
+    {{#each game_instances}}
+      {{>game_instance}}
+    {{/each}}
   </div>
 </template>
 
-<template name="start_player">
-  <button class="player_1" disabled="{{started}}">Player 1 -  Engineer</button>
+<template name="game_instance">
+  <div class="game_instance">
+    {{#unless game_started}}
+      <h2>Select a Class</h2>
+      {{#each players}}
+        {{>class_selector}}
+      {{/each}}
+    {{else}}
+      {{turn_count}}
+    {{/unless}}
+  </div>
+</template>
+
+<!-- <template name="players_list">
+  <div class="players">
+    {{#each players}}
+      {{>start_player}}
+    {{/each}}
+  </div>
+</template> -->
+
+<template name="class_selector">
+  <button class="player_selector" disabled="{{started}}">{{character}}</button>
 </template>
