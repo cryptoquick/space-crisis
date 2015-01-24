@@ -1,0 +1,21 @@
+.card {
+  float: left;
+  width: 120px;
+  height: 200px;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 10px;
+  padding: 10px;
+}
+
+.crisis {
+  background-color: #e74c3c;
+}
+
+.equipment {
+  background-color: #3498db;
+}
+
+.skill {
+  background-color: #f1c40f;
+}

@@ -1,0 +1,45 @@
+<template name="cards_list">
+  {{#each skills}}
+    {{>skill_card}}
+  {{/each}}
+  {{#each equipment}}
+    {{>equipment_card}}
+  {{/each}}
+  {{#each crises}}
+    {{>crisis_event}}
+  {{/each}}
+</template>
+
+<template name="skill_card">
+  <div class="card skill">
+    <h1>{{name}}</h1>
+    <img src="skills/{{image}}.png">
+    <h2>For {{character}}</h2>
+    <p>{{description}}</p>
+  </div>
+</template>
+
+<template name="equipment_card">
+  <div class="card equipment">
+    <h1>{{name}}</h1>
+    <img src="equipment/{{image}}.png">
+    <p>Slots:
+      {{#each slots}}
+        {{this}}
+      {{/each}}
+    </p>
+    <p>{{description}}</p>
+  </div>
+</template>
+
+<template name="crisis_event">
+  <div class="card crisis">
+    <h1>{{name}}</h1>
+    <h2>Lasts {{turns}} turns</h2>
+    <p>Slots:
+      {{#each slots}}
+        {{this}}
+      {{/each}}
+    </p>
+  </div>
+</template>

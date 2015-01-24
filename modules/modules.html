@@ -1,0 +1,22 @@
+<template name="module">
+  <div class="module">
+    <h2>{{module_name}}</h2>
+    <ul>
+      {{#each equipment}}
+        <li>
+          {{>module_equipment}}
+        </li>
+      {{/each}}
+    </ul>
+  </div>
+</template>
+
+<template name="module_equipment">
+  <button>{{name}}</button>
+</template>
+
+<template name="board">
+  {{#each modules}}
+    {{>module}}
+  {{/each}}
+</template>
