@@ -1,0 +1,13 @@
+<template name="start_screen">
+  <div class="start">
+    <div class="players">
+      {{#each players}}
+        {{>start_player}}
+      {{/each}}
+    </div>
+  </div>
+</template>
+
+<template name="start_player">
+  <button class="player_1" disabled="{{started}}">Player 1 -  Engineer</button>
+</template>
