@@ -23,7 +23,7 @@ var skills = [
 
 var equipment = [
   {
-    name: "Fire Extinguisher",
+    name: "Extinguisher",
     slots: ["Fire"],
     description: "Puts out a fire.",
     image: "FireExtinguisher"
