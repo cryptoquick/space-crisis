@@ -17,7 +17,14 @@ var skills = [
     character: "Engineer",
     name: "Cannibalize",
     slots: [],
-    description: "Damages a module and generates a new Equipment card."
+    description: "Damages a Module and generates a new Equipment card."
+  },
+  
+  {
+    character: "Engineer",
+    name: "MacGyver",
+    slots: [],
+    description: "Turns an Equipment card into a different Equipment card."
   }
 ];
 
