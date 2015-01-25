@@ -38,3 +38,15 @@
   position: absolute;
   width: 100vw;
 }
+
+.board {
+  position: absolute;
+  top: 25px;
+}
+
+.messages {
+  position: absolute;
+  top: 10px;
+  left: 100px;
+  font-family: sans-serif;
+}

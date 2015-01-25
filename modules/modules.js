@@ -1,236 +1,13 @@
 Modules = new Mongo.Collection("modules");
 Crises = new Mongo.Collection("crises");
-ActiveCrises = new Mongo.Collection("active_crises");
-
-var modules = [
-  {
-    module_name: "Environmental Control",
-    points: 100,
-    equipment: [
-        "Fire Extinguisher"
-    ],
-    image: "Booster",
-    potential_crises: [
-      "Fire",
-      "Hull Breach"
-    ],
-    has_crisis: false,
-    left: 2,
-    top: 0,
-    border: 'bottom'
-  },
-  
-  {
-    module_name: "Oxygen Generator",
-    points: 100,
-    equipment: [],
-    image: "OxygenRecycle",
-    potential_crises: [
-      "Fire",
-      "Hull Breach"
-    ],
-    has_crisis: false,
-    left: 2,
-    top: 2,
-    border: 'top'
-  },
-  
-  {
-    module_name: "Seed Bank",
-    points: 100,
-    equipment: [],
-    image: "SeedBank",
-    potential_crises: [
-      "Fire",
-      "Hull Breach"
-    ],
-    has_crisis: false,
-    left: 5,
-    top: 1
-  },
-  
-  {
-    module_name: "Habitation",
-    points: 100,
-    equipment: [],
-    image: "SleepRoom",
-    potential_crises: [
-      "Fire",
-      "Hull Breach"
-    ],
-    has_crisis: false,
-    left: 3,
-    top: 1,
-    border: 'right'
-  },
-  
-  {
-    module_name: "Mechanical",
-    points: 100,
-    equipment: [],
-    image: "ToolBox",
-    potential_crises: [
-      "Fire",
-      "Hull Breach"
-    ],
-    has_crisis: false,
-    left: 2,
-    top: 1,
-    border: 'right'
-  },
-  
-  {
-    module_name: "Water Recovery",
-    points: 100,
-    equipment: [],
-    image: "WasteRecycle",
-    potential_crises: [
-      "Fire",
-      "Hull Breach"
-    ],
-    has_crisis: false,
-    left: 1,
-    top: 1,
-    border: 'right'
-  },
-  
-  {
-    module_name: "Propulsion",
-    points: 100,
-    equipment: [],
-    image: "Moisturizer",
-    potential_crises: [
-      "Fire",
-      "Hull Breach"
-    ],
-    has_crisis: false,
-    left: 0,
-    top: 1,
-    border: 'right'
-  },
-  
-  {
-    module_name: "Hydroponics",
-    points: 100,
-    equipment: [],
-    image: "Farm",
-    potential_crises: [
-      "Fire",
-      "Hull Breach"
-    ],
-    has_crisis: false,
-    left: 4,
-    top: 1,
-    border: 'right'
-  },
-  
-  {
-    module_name: "Starboard Rear Solar Panel",
-    points: 50,
-    equipment: [],
-    image: "PanelLeft",
-    potential_crises: [
-      "Fire",
-      "Hull Breach"
-    ],
-    has_crisis: false,
-    left: 0,
-    top: 0,
-    solar: 'solar-rear'
-  },
-  
-  {
-    module_name: "Port Rear Solar Panel",
-    points: 50,
-    equipment: [],
-    image: "PanelLeft",
-    potential_crises: [
-      "Fire",
-      "Hull Breach"
-    ],
-    has_crisis: false,
-    left: 0,
-    top: 2,
-    solar: 'solar-rear'
-  },
-  
-  {
-    module_name: "Starboard Forward Solar Panel",
-    points: 50,
-    equipment: [],
-    image: "PanelRight",
-    potential_crises: [
-      "Fire",
-      "Hull Breach"
-    ],
-    has_crisis: false,
-    left: 3,
-    top: 0,
-    solar: 'solar-forward'
-  },
-  
-  {
-    module_name: "Port Forward Solar Panel",
-    points: 50,
-    equipment: [],
-    image: "PanelRight",
-    potential_crises: [
-      "Fire",
-      "Hull Breach"
-    ],
-    has_crisis: false,
-    left: 3,
-    top: 2,
-    solar: 'solar-forward'
-  }
-];
-
-var crises = [
-  {
-    name: "Fire",
-    turns: "1",
-    slots: [
-      {
-        type: "Fire",
-        solved: false
-      }
-    ],
-    assigned_module: 0
-  },
-  
-  {
-    name: "Electrical Fire",
-    turns: "2",
-    slots: [
-      {
-        type: "Fire",
-        solved: false
-      },
-      {
-        type: "Short",
-        solved: false
-      }
-    ],
-    assigned_module: 0
-  },
-  
-  {
-    name: "Hull Damage",
-    turns: "3",
-    slots: [
-      {
-        type: "Damage",
-        solved: false
-      }
-    ],
-    assigned_module: 0
-  }
-];
 
 if (Meteor.isClient) {
   Template.board.helpers({
     modules: function () {
-      return Modules.find({});
+      var player = Players.findOne(Session.get('player_id'));
+      return Modules.find({
+        game: player.game
+      });
     }
   });
   
@@ -248,7 +25,6 @@ if (Meteor.isClient) {
       return '"left:' + (this.left * 160) + 'px;top:' + (this.top * 160) + 'px'
     },
     clicked: function () {
-      console.log(this);
       return this.clicked;
     }
   });
@@ -260,11 +36,6 @@ if (Meteor.isClient) {
       var targeting_mode = Session.get("targeting_mode");
       if (!targeting_mode) {
         this.clicked = !this.clicked;
-//         if (!this.clicked) {
-//           this.clicked = true;
-//         } else {
-//           this.clicked = false;
-//         }
       } else if (targeting_mode === "Module") {
         // Logic for using a Skill/Equipment on a Module
         Session.set("targeting_mode", "");
@@ -280,38 +51,69 @@ if (Meteor.isClient) {
   });
   
   Template.crisis.events({
-    "click .crisis": function() {
-      if (Session.get("player_done", true)) return;
+    "click .crisis": function(evt) {
+      Session.set('message', this.name);
       
-      var targeting_mode = Session.get("targeting_mode");
-      if (targeting_mode === "") {
-        if (!this.clicked) {
-          this.clicked = true;
-        } else {
-          this.clicked = false;
-        }
-      } else if (targeting_mode === "Crisis") {
-        // Logic for using a Skill/Equipment on a Crisis
-        for (var i = 0; i < this.slots.length; i++) {
-          if (!this.slots[i].solved) {
+      var skill_id = Session.get('selected_skill');
+      var crisis_id = this._id;
+      
+      if (skill_id) {
+        var skill = Hands.findOne(skill_id);
+        var crisis_slots = this.slots;
+        
+        var solved_slots = this.slots.map(function (crisis_slot) {
+          if (!crisis_slot.solved) {
             // This needs to get the Skill or Equipment the player clicked on and compare its slot-fixers to the crisis' open slots
-            var selected_card = Session.get("active_action");
-            var slot_fixers = selected_card.slots;
-            for (var j = 0; j < slot_fixers.length; j++) {
-              if (this.slots[i].type === slot_fixers[j]) {
-                this.slots[i].solved = true;
-                Session.set("targeting_mode", "");
-                Session.set("player_done", true);
-                Session.set("active_action", "");
+            var slot_fixers = skill.slots;
+            slot_fixers.forEach(function (skill_slot) {
+              if (crisis_slot.type === skill_slot) {
+                crisis_slot.solved = true;
               }
-            }
+            });
+            return crisis_slot;
           }
-        }
+        });
+        Crises.update(crisis_id, {
+          $set: {
+            slots: solved_slots
+          }
+        });
       }
+      
+      
+//       if (skill) {
+        
+//       }
+      
+//       if (Session.get("player_done", true)) return;
+      
+//       var targeting_mode = Session.get("targeting_mode");
+//       if (targeting_mode === "") {
+//         if (!this.clicked) {
+//           this.clicked = true;
+//         } else {
+//           this.clicked = false;
+//         }
+//       } else if (targeting_mode === "Crisis") {
+//         // Logic for using a Skill/Equipment on a Crisis
+//         
+//         // Active action is a string literal of a direct JavaScript function
+//         var futher_action = Session.get("active_action").action;
+//         if (further_action) {
+//           var action_function = new Function(further_action);
+//           action_function.call(this);
+//         }
+//         Session.set("active_action", "");
+//       }
     }
   })
   
   Template.crisis.helpers({
+    active_crisis: function() {
+      return Crises.find({
+        assigned_module: this._id
+      });
+    },
     crisis_slot_style: function() {
       if (this.solved) {
         return "text-decoration: line-through;";
@@ -319,21 +121,42 @@ if (Meteor.isClient) {
         return "";
       }
     }
-  })
+  });
+  
+  Tracker.autorun(function () {
+    var solved_crises = Crises.find({
+      "slots.solved": true
+    }).fetch();
+    
+    solved_crises.map(function (crisis) {
+      console.log(crisis);
+      var is_solved = crisis.slots.reduce(function (prev, slot) {
+        if (!slot) {
+          prev = slot;
+        }
+        return prev;
+      }, true);
+      console.log('is_solved', is_solved);
+      if (is_solved) {
+        Modules.update(crisis.assigned_module, {
+          $set: {
+            has_crisis: false
+          }
+        });
+        Crises.remove(crisis._id);
+      }
+    });
+  });
 }
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // Clear
-    Modules.remove({});
-    Crises.remove({});
-    ActiveCrises.remove({});
+//     Modules.remove({});
+//     Crises.remove({});
     // Populate
-    modules.map(function (module) {
-      Modules.insert(module);
-    });
-    crises.map(function (crisis) {
-      Crises.insert(crisis);
-    });
+//     modules.map(function (module) {
+//       Modules.insert(module);
+//     });
   });
 }

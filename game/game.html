@@ -1,6 +1,6 @@
 <template name="game">
   <button class="reset_game">Reset Game</button>
-  <div>{{show_message}}</div>
+  <div class="messages">{{show_message}}</div>
   {{#unless game_started}}
     {{>start_screen}}
   {{else}}

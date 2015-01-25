@@ -11,7 +11,8 @@ var skills = [
     ],
     target: "Crisis",
     description: "Can repair shorts and/or damaged parts.",
-    image: ""
+    image: "",
+    action: "console.log('You just used the Engineer skill Repair.')"
   },
   
   {
@@ -20,7 +21,8 @@ var skills = [
     slots: [],
     target: "Module",
     description: "Damages a Module, but generates a new Equipment card.",
-    image: ""
+    image: "Cannibalize",
+    action: "console.log('You just used the Engineer skill Cannibalize.')"
   },
   
   {
@@ -29,7 +31,8 @@ var skills = [
     slots: [],
     target: "Equipment",
     description: "Turns an Equipment card into a different Equipment card.",
-    image: ""
+    image: "MacGyver",
+    action: "console.log('You just used the Engineer skill MacGyver.')"
   },
   
   {
@@ -38,7 +41,8 @@ var skills = [
     slots: [],
     target: "Module",
     description: "Completely solves a Crisis, but next turn the Module is on fire.",
-    image: "QuickFix"
+    image: "QuickFix",
+    action: "console.log('You just used the Engineer skill Quick Fix.')"
   },
   
   {
@@ -47,7 +51,8 @@ var skills = [
     slots: [],
     target: "Module",
     description: "Change a Module into another random Module.",
-    image: ""
+    image: "ReverseEngineer",
+    action: "console.log('You just used the Engineer skill Reverse Engineer.')"
   },
   
   {
@@ -56,7 +61,8 @@ var skills = [
     slots: [],
     target: "Module",
     description: "Destroy a Module completely.",
-    image: ""
+    image: "Jettison",
+    action: "console.log('You just used the Pilot skill Jettison.')"
   },
   
   {
@@ -65,7 +71,8 @@ var skills = [
     slots: ["Fire"],
     target: "Crisis",
     description: "Suffocates Fires but may cause a Wall Breach.",
-    image: ""
+    image: "Evacuate",
+    action: "console.log('You just used the Pilot skill Evacuate.')"
   },
   
   {
@@ -74,7 +81,8 @@ var skills = [
     slots: [],
     target: "Module",
     description: "Returns your Equipment to their Modules.",
-    image: ""
+    image: "Return",
+    action: "console.log('You just used the Pilot skill Return.')"
   }
 ];
 
@@ -84,7 +92,8 @@ var equipment = [
     slots: ["Fire"],
     description: "Puts out a fire.",
     target: "Crisis",
-    image: "FireExtinguisher"
+    image: "FireExtinguisher",
+    action: "console.log('You just used the Equipment card Extinguisher.')"
   },
   
   {
@@ -92,7 +101,8 @@ var equipment = [
     slots: ["Damage"],
     description: "Repairs damaged stuff.",
     target: "Crisis",
-    image: "Wrench"
+    image: "Wrench",
+    action: "console.log('You just used the Equipment card Wrench.')"
   },
   
   {
@@ -100,7 +110,8 @@ var equipment = [
     slots: ["Short"],
     description: "Repairs electrical shorts.",
     target: "Crisis",
-    image: "WireKit"
+    image: "WireKit",
+    action: "console.log('You just used the Equipment card Wire Kit.')"
   },
   
   {
@@ -108,7 +119,8 @@ var equipment = [
     slots: [],
     description: "Becomes an Equipment card that can solve a current Crisis.",
     target: "",
-    image: "3DPrinter"
+    image: "3DPrinter",
+    action: "console.log('You just used the Equipment card 3D Printer.')"
   },
   
   {
@@ -116,7 +128,8 @@ var equipment = [
     slots: [],
     description: "If there's a Hull Breach, you can live for another turn.",
     target: "",
-    image: "Suit"
+    image: "Suit",
+    action: "console.log('You just used the Equipment card Suit.')"
   }
 ];
 

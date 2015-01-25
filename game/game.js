@@ -14,27 +14,31 @@ if (Meteor.isServer) {
     
     quit_games: function () {
       Game.remove({});
+      Modules.remove({});
+      Crises.remove({});
     }
   });
 }
 
 if (Meteor.isClient) {
   Template.game.helpers({
-    game: function () {
-      return Game.findOne({
-        game: global_settings.game_id
-      });
-    },
-    log: function (item) {
-      console.log(item);
-    },
+//     game: function () {
+//       return Game.findOne({
+//         game: global_settings.game_id
+//       });
+//     },
     game_started: function () {
       var player_id = Session.get('player_id');
       if (player_id) {
         var player = Players.findOne(player_id);
         if (player) {
           var game = Game.findOne(player.game);
-          return game.game_started;
+          if (game) {
+            return game.game_started;
+          }
+          else {
+            return false;
+          }
         }
         else {
           return false;
