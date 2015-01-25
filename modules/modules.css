@@ -5,3 +5,39 @@
 .details {
   
 }
+
+.solar-forward {
+  margin-left: -10px;
+}
+
+.solar-rear {
+  margin-left: 80px;
+}
+
+.module-right:after, .module-top:after, .module-bottom:after {
+  content: '';
+  position: absolute;
+}
+
+.module-right:after {
+  background: url('/modules/ModuleBorders.png') 0 0 no-repeat;
+  right: -15px;
+  top: 0;
+  height: 150px;
+  width: 15px;
+}
+
+.module-top:after, .module-bottom:after {
+  background: url('/modules/ModuleBorders2.png') 0 0 no-repeat;
+  right: 0;
+  height: 15px;
+  width: 150px;
+}
+
+.module-top:after {
+  top: -10px;
+}
+
+.module-bottom:after {
+  bottom: -11px;
+}

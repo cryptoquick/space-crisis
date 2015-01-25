@@ -22,13 +22,19 @@
 }
 
 .skill {
-  background: url('equipment/SkillBack.png') no-repeat;
+  background: url('ui/SkillBack.png') no-repeat;
 /*   background-size: cover; */
 /*   background-color: #f1c40f; */
 }
 
 .equipment {
-  background: url('equipment/EquipBack.png') no-repeat;
+  background: url('ui/EquipBack.png') no-repeat;
 /*   background-size: cover; */
 /*   background-color: #f1c40f; */
+}
+
+.hand {
+  top: 500px;
+  position: absolute;
+  width: 100vw;
 }

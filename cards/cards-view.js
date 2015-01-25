@@ -26,9 +26,11 @@ if (Meteor.isClient) {
         if (!this.clicked) {
           this.clicked = true;
           Session.set("targeting_mode", this.target);
+          Session.set("active_action", this);
         } else {
           this.clicked = false;
           Session.set("targeting_mode", "");
+          Session.set("active_action", "");
         }
       }
     }
@@ -53,14 +55,17 @@ if (Meteor.isClient) {
         if (!this.clicked) {
           this.clicked = true;
           Session.set("targeting_mode", this.target);
+          Session.set("active_action", this);
         } else {
           this.clicked = false;
           Session.set("targeting_mode", "");
+          Session.set("active_action", this);
         }
       } else if (targeting_mode === "Equipment") {
         // Logic for targeting Equipment with Skills/other Equipment
         Session.set("targeting_mode", "");
         Session.set("player_done", true);
+        Session.set("active_action", "");
       }
     }
   });

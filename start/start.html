@@ -1,6 +1,8 @@
 <template name="start_screen">
   <h1>Space Crisis 1972</h1>
-  <button class="new_game">New Game</button>
+  {{#unless slots_available}}
+    <button class="new_game">New Game</button>
+  {{/unless}}
   {{>games_list}}
 </template>
 
@@ -34,5 +36,11 @@
 </template> -->
 
 <template name="class_selector">
-  <button class="player_selector" disabled="{{started}}">{{character}}</button>
+  <div class="player_selector">
+    <img src="ui/{{image}}.png">
+    {{#if started}}
+      &#10003;
+    {{/if}}
+    <h1>{{character}}</h1>
+  </div>
 </template>
