@@ -71,6 +71,12 @@ if (Meteor.isClient) {
       } else {
         return "";
       }
+    },
+    won: function () {
+      return Session.get('game_condition') === 'win';
+    },
+    fail: function () {
+      return Session.get('game_condition') === 'fail';
     }
   });
   

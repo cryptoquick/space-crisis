@@ -247,8 +247,6 @@ if (Meteor.isServer) {
       var skills = _.where(global_settings.skills, {character: character});
       var equipment_list = global_settings.equipment;
       
-      console.log(skills);
-      
       for (i = 0; i < 2; i++) {
         var skill_card = Random.choice(skills);
         skill_card.player_id = player_id;
@@ -333,7 +331,7 @@ if (Meteor.isServer) {
     end_current_turn: function(game_id) {
       Game.update(game_id, {
           $inc: {
-            turns: 1
+            turn_count: 1
           }
       });
       Players.update({
@@ -346,8 +344,8 @@ if (Meteor.isServer) {
           multi: true
       });
       var game = Game.find(game_id);
-      if (game.turns >= global_settings.max_turns) {
-        return "You have saved the day!";
+      if (game.turn_count >= global_settings.max_turns) {
+        return "win";
       } else {
         // Check for failure state
         var modules_with_crises = Modules.find({
@@ -372,9 +370,43 @@ if (Meteor.isServer) {
           multi: true
         });
         if (damaged_modules >= 3) {
-          return "Your team has failed! The space station is ruined!";
+          return "fail";
         } else {
-          return Meteor.call('generate_crisis');
+          Players.find({
+            game: game_id
+          }).fetch().forEach(function(player) {
+            var player_id = player._id;
+            var skill_cards = Hands.find({
+              player_id: player_id,
+              type: "Skill"
+            }).fetch();
+            var skills = _.where(global_settings.skills, {character: player.character});
+            console.log(skill_cards.length, skills.length, global_settings.max_skill_cards);
+            if (skill_cards.length < global_settings.max_skill_cards) {
+              // Only draw one more skill card
+              var skill_card = Random.choice(skills);
+              skill_card.player_id = player_id;
+              skill_card.game_id = global_settings.game_id;
+              skill_card.type = "Skill";
+              Hands.insert(skill_card);
+            }
+            var equipment_cards = Hands.find({
+              player_id: player_id,
+              type: "Equipment"
+            }).fetch();
+            if (equipment_cards.length < global_settings.max_equipment_cards) {
+              // Draw up to the maximum hand size
+              var card_difference = (global_settings.max_equipment_cards - equipment_cards.length);
+              for (i = 0; i < card_difference; i++) {
+                var equipment_card = Random.choice(global_settings.equipment);
+                equipment_card.player_id = player_id;
+                equipment_card.game_id = global_settings.game_id;
+                equipment_card.type = "Equipment";
+                Hands.insert(equipment_card);
+              }
+            }
+          });
+          return Meteor.call('generate_crisis', game_id);
         }
       }
     }
@@ -446,7 +478,8 @@ if (Meteor.isClient) {
     }).fetch();
     
     if (ended_players.length >= global_settings.max_players) {
-      Session.set('message', Meteor.call('end_current_turn', ended_players[0].game));
+      var return_message = Meteor.call('end_current_turn', ended_players[0].game);
+      Session.set('condition', return_message);
     }
   });
 }

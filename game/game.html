@@ -18,5 +18,11 @@
     {{else}}
       <img class="end_turn" alt="Turn Ended" src="ui/DisEndTurn.png">
     {{/if}}
+    {{#if won}}
+      <div class="won">You have saved the day!</div>
+    {{/if}}
+    {{#if loss}}
+      <div class="fail">Your team has failed! The space station is ruined!</div>
+    {{/if}}
   {{/unless}}
 </template>

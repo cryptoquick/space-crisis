@@ -71,28 +71,25 @@ if (Meteor.isClient) {
       
       if (card_id) {
         var card = Hands.findOne(card_id);
+        var total_slots = crisis.slots.length;
         var solved_slots = crisis.slots.map(function (crisis_slot) {
           if (!crisis_slot.solved) {
             // This needs to get the Skill or Equipment the player clicked on and compare its slot-fixers to the crisis' open slots
             var slot_fixers = card.slots;
-            
             if (slot_fixers) {
               slot_fixers.forEach(function (card_slot) {
                 if (crisis_slot.type === card_slot) {
                   crisis_slot.solved = true;
                 }
               });
-              
-//               if (card.action) {
-//                 card_actions[card.action](card, crisis);
-//               }
             }
-            
             return crisis_slot;
           }
         });
-        Hands.remove(card_id);
-        Session.set('selected_card', null);
+        if (total_slots === solved_slots.length) {
+          Hands.remove(card_id);
+          Session.set('selected_card', null);
+        }
         Crises.update(crisis_id, {
           $set: {
             slots: solved_slots
@@ -151,7 +148,7 @@ if (Meteor.isClient) {
         }).count();
         
         if (remaining_crises === 0) {
-          Meteor.call("end_current_turn", crisis.game);
+//           Meteor.call("end_current_turn", crisis.game);
         }
       }
     });
