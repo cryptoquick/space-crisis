@@ -5,9 +5,7 @@ var modules = [
   {
     module_name: "Environmental Control",
     points: 100,
-    equipment: [
-        "Fire Extinguisher"
-    ],
+    equipment: ["Fire Extinguisher"],
     image: "Booster",
     potential_crises: [
       "Fire",
@@ -22,7 +20,7 @@ var modules = [
   {
     module_name: "Oxygen Generator",
     points: 100,
-    equipment: [],
+    equipment: ["Fire Extinguisher"],
     image: "OxygenRecycle",
     potential_crises: [
       "Fire",
@@ -51,7 +49,7 @@ var modules = [
   {
     module_name: "Habitation",
     points: 100,
-    equipment: [],
+    equipment: ["Knife"],
     image: "SleepRoom",
     potential_crises: [
       "Fire",
@@ -66,7 +64,7 @@ var modules = [
   {
     module_name: "Mechanical",
     points: 100,
-    equipment: [],
+    equipment: ["3D Printer", "3D Printer", "Wrench", "Wire Kit", "Patch Kit", "Welder"],
     image: "ToolBox",
     potential_crises: [
       "Fire",
@@ -81,7 +79,7 @@ var modules = [
   {
     module_name: "Water Recovery",
     points: 100,
-    equipment: [],
+    equipment: ["Welder", "Patch Kit"],
     image: "WasteRecycle",
     potential_crises: [
       "Fire",
@@ -96,7 +94,7 @@ var modules = [
   {
     module_name: "Propulsion",
     points: 100,
-    equipment: [],
+    equipment: ["Fire Extinguisher", "Duct Tape", "Wrench"],
     image: "Moisturizer",
     potential_crises: [
       "Fire",
@@ -111,7 +109,7 @@ var modules = [
   {
     module_name: "Hydroponics",
     points: 100,
-    equipment: [],
+    equipment: ["Fire Extinguisher", "Wire Kit"],
     image: "Farm",
     potential_crises: [
       "Fire",
@@ -203,10 +201,18 @@ var crises = [
   
   {
     name: "Hull Breach",
-    turns: "3",
+    turns: "1",
     slots: [
       {
-        type: "Damage",
+        type: "Hull Damage",
+        solved: false
+      },
+      {
+        type: "Metal Tear",
+        solved: false
+      },
+      {
+        type: "Loose Bolts",
         solved: false
       }
     ],
@@ -238,10 +244,10 @@ if (Meteor.isServer) {
         in_game: false
       });
       
-      var skills = Skills.find({
-        character: character
-      }).fetch();
-      var equipment_list = Equipment.find({}).fetch();
+      var skills = _.where(global_settings.skills, {character: character});
+      var equipment_list = global_settings.equipment;
+      
+      console.log(skills);
       
       for (i = 0; i < 2; i++) {
         var skill_card = Random.choice(skills);
@@ -272,7 +278,7 @@ if (Meteor.isServer) {
           module.has_crisis = false;
           Modules.insert(module);
         });
-        Meteor.call('generate_first_crisis');
+        
         Game.update(game_id, {
           $set: {
             game_started: true
@@ -296,22 +302,81 @@ if (Meteor.isServer) {
           in_game: true
         }
       });
+      
+      return Meteor.call('generate_crisis', game_id);
     },
     
-    generate_first_crisis: function() {
-      var random_module = Random.choice(Modules.find({}).fetch());
+    generate_crisis: function(game_id) {
+      var random_module = Random.choice(Modules.find({
+        solar: {
+          $nin: ['solar-rear', 'solar-forward']
+        },
+        game: game_id
+      }).fetch());
+
       var random_crisis_name = Random.choice(random_module.potential_crises);
       var random_crisis = _.clone(_.find(crises, function (item) {
         return item.name === random_crisis_name;
       }));
-//       console.log(random_crisis, random_crisis_name, random_crisis.name)
       Modules.update(random_module._id, {
         $set: {
           has_crisis: true
         }
       });
       random_crisis.assigned_module = random_module._id;
+      random_crisis.game = random_module.game;
       Crises.insert(random_crisis);
+      
+      return 'A Crisis has started in ' + random_module.module_name + "!";
+    },
+    
+    end_current_turn: function(game_id) {
+      Game.update(game_id, {
+          $inc: {
+            turns: 1
+          }
+      });
+      Players.update({
+          game: game_id
+        }, {
+          $set: {
+            ended_turn: false
+          }
+        }, {
+          multi: true
+      });
+      var game = Game.find(game_id);
+      if (game.turns >= global_settings.max_turns) {
+        return "You have saved the day!";
+      } else {
+        // Check for failure state
+        var modules_with_crises = Modules.find({
+          game: game_id,
+          has_crisis: true
+        });
+        var damaged_modules = 0;
+        modules_with_crises.forEach(function (module) {
+          if (module.health != 100) {
+            damaged_modules++;
+          }
+        });
+        // Also need to update the health value of each damaged module, for next turn
+        Modules.update({
+          game: game_id,
+          has_crisis: true
+        }, {
+          $set: {
+            health: 0
+          }
+        }, {
+          multi: true
+        });
+        if (damaged_modules >= 3) {
+          return "Your team has failed! The space station is ruined!";
+        } else {
+          return Meteor.call('generate_crisis');
+        }
+      }
     }
   });
 }
@@ -344,8 +409,7 @@ if (Meteor.isClient) {
           }
         });
       }
-      
-      Session.set('message', 'You picked the ' + this.character + '!');
+
       Session.set('player_id', this._id);
       
       var player = Players.findOne(this._id);
@@ -374,7 +438,15 @@ if (Meteor.isClient) {
     }).fetch();
     
     if (started_players.length >= global_settings.max_players) {
-      Meteor.call('start_game', started_players[0].game);
+      Session.set('message', Meteor.call('start_game', started_players[0].game));
+    }
+    
+    var ended_players = Players.find({
+      ended_turn: true
+    }).fetch();
+    
+    if (ended_players.length >= global_settings.max_players) {
+      Session.set('message', Meteor.call('end_current_turn', ended_players[0].game));
     }
   });
 }

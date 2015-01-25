@@ -19,7 +19,7 @@ if (Meteor.isClient) {
   
   Template.skill_card.events({
     "click .skill": function() {
-      Session.set('selected_skill', this._id);
+      Session.set('selected_card', this._id);
       
 //       if (Session.get("player_done", true)) return;
       
@@ -53,7 +53,7 @@ if (Meteor.isClient) {
   
   Template.equipment_card.events({
     "click .equipment": function() {
-      Session.set('selected_skill', this._id);
+      Session.set('selected_card', this._id);
       
 //       if (Session.get("player_done", true)) return;
       

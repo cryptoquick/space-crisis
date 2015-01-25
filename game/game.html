@@ -1,8 +1,10 @@
 <template name="game">
-  <button class="reset_game">Reset Game</button>
+  <button class="reset_game">Reset All Games</button>
   <div class="messages">{{show_message}}</div>
   {{#unless game_started}}
-    {{>start_screen}}
+    <div class="start_screen">
+      {{>start_screen}}
+    </div>
   {{else}}
     <div class="board">
       {{>board}}
@@ -11,5 +13,10 @@
       {{>skill_list}}
       {{>equipment_list}}
     </div>
+    {{#if player_ended_turn}}
+      <img class="end_turn" alt="End Turn" src="ui/EndTurn.png">
+    {{else}}
+      <img class="end_turn" alt="Turn Ended" src="ui/DisEndTurn.png">
+    {{/if}}
   {{/unless}}
 </template>

@@ -14,19 +14,26 @@ if (Meteor.isServer) {
     
     quit_games: function () {
       Game.remove({});
-      Modules.remove({});
       Crises.remove({});
+      Modules.remove({});
+      Hands.remove({});
+      Players.remove({});
+      Equipment.remove({});
+      Skills.remove({});
     }
   });
 }
 
 if (Meteor.isClient) {
   Template.game.helpers({
-//     game: function () {
-//       return Game.findOne({
-//         game: global_settings.game_id
-//       });
-//     },
+    game: function () {
+      return Game.findOne({
+        game: global_settings.game_id
+      });
+    },
+    log: function (item) {
+      console.log(item);
+    },
     game_started: function () {
       var player_id = Session.get('player_id');
       if (player_id) {
@@ -47,6 +54,23 @@ if (Meteor.isClient) {
       else {
         return false;
       }
+    },
+    player_ended_turn: function() {
+      var player_id = Session.get('player_id');
+      if (player_id) {
+        var player = Players.findOne(player_id);
+        if (player) {
+          if (player.ended_turn) {
+            return "disabled";
+          } else {
+            return "";
+          }
+        } else {
+          return "";
+        }
+      } else {
+        return "";
+      }
     }
   });
   
@@ -54,7 +78,18 @@ if (Meteor.isClient) {
     "click .reset_game": function () {
       Meteor.call('quit_games');
       Meteor.call('reset_players');
-      Session.set('message', '');
+    },
+    
+    "click .end_turn": function() {
+      var player_id = Session.get('player_id');
+      if (player_id) {
+        var player = Players.findOne(player_id);
+        Players.update(player_id, {
+          $set: {
+            ended_turn: !player.ended_turn
+          }
+        });
+      }
     }
   });
 }

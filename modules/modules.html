@@ -20,19 +20,18 @@
 </template>
 
 <template name="crisis">
-  {{log this}}
   {{#each active_crisis}}
-    {{log this}}
     <div class="crisis">
       <img src="ui/Crisis.png">
     </div>
-<!--     {{#if this.clicked}}
+    {{#if showing}}
       <div class="card">
-      <h2>{{this.turns}} turns remaining.</h2>
-      {{#each this.slots}}
-      <h2 {{crisis_slot_style}}>{{this.type}}</h2>
-      {{/each}}
-    </div>
-    {{/if}} -->
+        <h1>{{name}}</h1>
+        <h2>{{turns}} turns remaining.</h2>
+        {{#each slots}}
+          <h2 class="{{crisis_slot_style}}">{{type}}</h2>
+        {{/each}}
+      </div>
+    {{/if}}
   {{/each}}
 </template>

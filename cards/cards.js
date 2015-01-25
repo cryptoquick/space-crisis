@@ -1,28 +1,28 @@
 Skills = new Mongo.Collection("skills");
 Equipment = new Mongo.Collection("equipment");
 
-var skills = [
+var skills = global_settings.skills = [
   {
     character: "Engineer",
     name: "Repair",
     slots: [
       "Short",
-      "Damage"
+      "Loose Bolts"
     ],
     target: "Crisis",
-    description: "Can repair shorts and/or damaged parts.",
-    image: "",
-    action: "console.log('You just used the Engineer skill Repair.')"
+    description: "Can repair shorts and/or loose bolts.",
+    image: "Repair",
+    action: ""
   },
   
-  {
+  /*{
     character: "Engineer",
     name: "Cannibalize",
     slots: [],
     target: "Module",
     description: "Damages a Module, but generates a new Equipment card.",
     image: "Cannibalize",
-    action: "console.log('You just used the Engineer skill Cannibalize.')"
+    action: "cannibalize_skill"
   },
   
   {
@@ -32,7 +32,7 @@ var skills = [
     target: "Equipment",
     description: "Turns an Equipment card into a different Equipment card.",
     image: "MacGyver",
-    action: "console.log('You just used the Engineer skill MacGyver.')"
+    action: "macgyver_skill"
   },
   
   {
@@ -42,7 +42,7 @@ var skills = [
     target: "Module",
     description: "Completely solves a Crisis, but next turn the Module is on fire.",
     image: "QuickFix",
-    action: "console.log('You just used the Engineer skill Quick Fix.')"
+    action: "quickfix_skill"
   },
   
   {
@@ -52,7 +52,7 @@ var skills = [
     target: "Module",
     description: "Change a Module into another random Module.",
     image: "ReverseEngineer",
-    action: "console.log('You just used the Engineer skill Reverse Engineer.')"
+    action: "reverseengineer_skill"
   },
   
   {
@@ -62,47 +62,86 @@ var skills = [
     target: "Module",
     description: "Destroy a Module completely.",
     image: "Jettison",
-    action: "console.log('You just used the Pilot skill Jettison.')"
-  },
+    action: "jettison_skill"
+  },*/
   
   {
     character: "Pilot",
     name: "Evacuate",
     slots: ["Fire"],
     target: "Crisis",
-    description: "Suffocates Fires but may cause a Wall Breach.",
+    description: "Suffocates Fires, but may cause a Hull Breach.",
     image: "Evacuate",
-    action: "console.log('You just used the Pilot skill Evacuate.')"
+    action: "evacuate_skill"
   },
   
   {
+    character: "Pilot",
+    name: "Gum Up",
+    slots: ["Leak", "Metal Tear"],
+    target: "Crisis",
+    description: "Fixes leaks and metal tears.",
+    image: "Gum",
+    action: ""
+  },
+  
+  /*{
     character: "Pilot",
     name: "Return",
     slots: [],
     target: "Module",
     description: "Returns your Equipment to their Modules.",
     image: "Return",
-    action: "console.log('You just used the Pilot skill Return.')"
-  }
+    action: "return_skill"
+  }*/
 ];
 
-var equipment = [
+var all_crises = ["Fire", "Loose Bolts", "Short", "Leak", "Metal Tear", "Hull Damage"];
+
+var equipment = global_settings.equipment = [
+  {
+    name: "Duct Tape",
+    slots: ["Leak"],
+    description: "Fixes leaks.",
+    target: "Crisis",
+    image: "DuctTape",
+    action: ""
+  },
+  
+  /*{
+    name: "Knife",
+    slots: [],
+    description: "Works on any problem, but can only repair one slot.",
+    target: "Crisis",
+    image: "Knife",
+    action: "swiss_knife"
+  },*/
+  
+  {
+    name: "Welder",
+    slots: ["Metal Tear"],
+    description: "Fixes metal tear.",
+    target: "Crisis",
+    image: "Welder",
+    action: ""
+  },
+  
   {
     name: "Extinguisher",
     slots: ["Fire"],
     description: "Puts out a fire.",
     target: "Crisis",
     image: "FireExtinguisher",
-    action: "console.log('You just used the Equipment card Extinguisher.')"
+    action: ""
   },
   
   {
     name: "Wrench",
-    slots: ["Damage"],
-    description: "Repairs damaged stuff.",
+    slots: ["Loose Bolts"],
+    description: "Fixes loose bolts.",
     target: "Crisis",
     image: "Wrench",
-    action: "console.log('You just used the Equipment card Wrench.')"
+    action: ""
   },
   
   {
@@ -111,16 +150,16 @@ var equipment = [
     description: "Repairs electrical shorts.",
     target: "Crisis",
     image: "WireKit",
-    action: "console.log('You just used the Equipment card Wire Kit.')"
+    action: ""
   },
   
-  {
+  /*{
     name: "3D Printer",
     slots: [],
     description: "Becomes an Equipment card that can solve a current Crisis.",
     target: "",
     image: "3DPrinter",
-    action: "console.log('You just used the Equipment card 3D Printer.')"
+    action: "3d_printer"
   },
   
   {
@@ -129,7 +168,16 @@ var equipment = [
     description: "If there's a Hull Breach, you can live for another turn.",
     target: "",
     image: "Suit",
-    action: "console.log('You just used the Equipment card Suit.')"
+    action: "suit"
+  },*/
+  
+  {
+    name: "Patch Kit",
+    slots: ["Hull Damage"],
+    description: "Fixes hull damage.",
+    target: "Crisis",
+    image: "PatchKit",
+    action: ""
   }
 ];
 

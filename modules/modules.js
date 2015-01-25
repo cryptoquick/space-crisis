@@ -1,6 +1,15 @@
 Modules = new Mongo.Collection("modules");
 Crises = new Mongo.Collection("crises");
 
+var card_actions = {
+  "3d_printer": function (card, crisis) {
+    
+  },
+  "suit": function (card, crisis) {
+    
+  }
+}
+
 if (Meteor.isClient) {
   Template.board.helpers({
     modules: function () {
@@ -42,6 +51,9 @@ if (Meteor.isClient) {
         Session.set("player_done", true);
       }
     },
+    "click .card": function () {
+      Session.set('active_crisis', null);
+    },
     "mouseover .module": function () {
       Session.set('message', this.module_name);
     },
@@ -52,59 +64,41 @@ if (Meteor.isClient) {
   
   Template.crisis.events({
     "click .crisis": function(evt) {
-      Session.set('message', this.name);
+      var card_id = Session.get('selected_card');
+      var crisis = this;
+      var crisis_id = crisis._id;
+      Session.set('active_crisis', crisis_id);
       
-      var skill_id = Session.get('selected_skill');
-      var crisis_id = this._id;
-      
-      if (skill_id) {
-        var skill = Hands.findOne(skill_id);
-        var crisis_slots = this.slots;
-        
-        var solved_slots = this.slots.map(function (crisis_slot) {
+      if (card_id) {
+        var card = Hands.findOne(card_id);
+        var solved_slots = crisis.slots.map(function (crisis_slot) {
           if (!crisis_slot.solved) {
             // This needs to get the Skill or Equipment the player clicked on and compare its slot-fixers to the crisis' open slots
-            var slot_fixers = skill.slots;
-            slot_fixers.forEach(function (skill_slot) {
-              if (crisis_slot.type === skill_slot) {
-                crisis_slot.solved = true;
-              }
-            });
+            var slot_fixers = card.slots;
+            
+            if (slot_fixers) {
+              slot_fixers.forEach(function (card_slot) {
+                if (crisis_slot.type === card_slot) {
+                  crisis_slot.solved = true;
+                }
+              });
+              
+//               if (card.action) {
+//                 card_actions[card.action](card, crisis);
+//               }
+            }
+            
             return crisis_slot;
           }
         });
+        Hands.remove(card_id);
+        Session.set('selected_card', null);
         Crises.update(crisis_id, {
           $set: {
             slots: solved_slots
           }
         });
       }
-      
-      
-//       if (skill) {
-        
-//       }
-      
-//       if (Session.get("player_done", true)) return;
-      
-//       var targeting_mode = Session.get("targeting_mode");
-//       if (targeting_mode === "") {
-//         if (!this.clicked) {
-//           this.clicked = true;
-//         } else {
-//           this.clicked = false;
-//         }
-//       } else if (targeting_mode === "Crisis") {
-//         // Logic for using a Skill/Equipment on a Crisis
-//         
-//         // Active action is a string literal of a direct JavaScript function
-//         var futher_action = Session.get("active_action").action;
-//         if (further_action) {
-//           var action_function = new Function(further_action);
-//           action_function.call(this);
-//         }
-//         Session.set("active_action", "");
-//       }
     }
   })
   
@@ -120,6 +114,10 @@ if (Meteor.isClient) {
       } else {
         return "";
       }
+    },
+    showing: function () {
+//       console.log('check_showing', this._id, Session.get('active_crisis'), Session.get('active_crisis') === this._id);
+      return Session.get('active_crisis') === this._id;
     }
   });
   
@@ -127,6 +125,8 @@ if (Meteor.isClient) {
     var solved_crises = Crises.find({
       "slots.solved": true
     }).fetch();
+    
+    console.log('solved_crises', solved_crises);
     
     solved_crises.map(function (crisis) {
       console.log(crisis);
@@ -143,7 +143,16 @@ if (Meteor.isClient) {
             has_crisis: false
           }
         });
+        
         Crises.remove(crisis._id);
+        
+        var remaining_crises = Crises.find({
+          game: crisis.game
+        }).count();
+        
+        if (remaining_crises === 0) {
+          Meteor.call("end_current_turn", crisis.game);
+        }
       }
     });
   });
