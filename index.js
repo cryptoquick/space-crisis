@@ -8,3 +8,9 @@ if (Meteor.isServer) {
 //     Meteor.call('init_players');
   });
 }
+
+if (Meteor.isClient) {
+  Meteor.startup(function () {
+    Session.set('message', '');
+  });
+}

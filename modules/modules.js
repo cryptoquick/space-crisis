@@ -9,7 +9,79 @@ var modules = [
         "Fire Extinguisher"
     ],
     image: "Booster",
-    has_crisis: false
+    has_crisis: false,
+    left: 2,
+    top: 0
+  },
+  
+  {
+    module_name: "Oxygen Recycle",
+    points: 100,
+    equipment: [],
+    image: "OxygenRecycle",
+    has_crisis: false,
+    left: 2,
+    top: 2
+  },
+  
+  {
+    module_name: "Seed Bank",
+    points: 100,
+    equipment: [],
+    image: "SeedBank",
+    has_crisis: false,
+    left: 5,
+    top: 1
+  },
+  
+  {
+    module_name: "Sleep Room",
+    points: 100,
+    equipment: [],
+    image: "SleepRoom",
+    has_crisis: false,
+    left: 3,
+    top: 1
+  },
+  
+  {
+    module_name: "Mechanical",
+    points: 100,
+    equipment: [],
+    image: "ToolBox",
+    has_crisis: false,
+    left: 2,
+    top: 1
+  },
+  
+  {
+    module_name: "Waste Recycle",
+    points: 100,
+    equipment: [],
+    image: "WasteRecycle",
+    has_crisis: false,
+    left: 1,
+    top: 1
+  },
+  
+  {
+    module_name: "Moisturizer",
+    points: 100,
+    equipment: [],
+    image: "Moisturizer",
+    has_crisis: false,
+    left: 0,
+    top: 1
+  },
+  
+  {
+    module_name: "Farm",
+    points: 100,
+    equipment: [],
+    image: "Farm",
+    has_crisis: false,
+    left: 4,
+    top: 1
   }
 ];
 
@@ -57,6 +129,9 @@ if (Meteor.isClient) {
       }
       equipment_html += "</p>";
       return equipment_html;
+    },
+    pos: function () {
+      return '"left:' + (this.left * 160) + 'px;top:' + (this.top * 160) + 'px'
     }
   });
   
@@ -76,6 +151,12 @@ if (Meteor.isClient) {
         Session.set("targeting_mode", "");
         Session.set("player_done", true);
       }
+    },
+    "mouseover .module": function () {
+      Session.set('message', this.module_name);
+    },
+    "mouseout .module": function () {
+      Session.set('message', '');
     }
   });
   

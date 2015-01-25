@@ -11,6 +11,7 @@ var skills = [
     ],
     target: "Crisis",
     description: "Can repair shorts and/or damaged parts.",
+    image: ""
   },
   
   {
@@ -18,7 +19,8 @@ var skills = [
     name: "Cannibalize",
     slots: [],
     target: "Module",
-    description: "Damages a Module, but generates a new Equipment card."
+    description: "Damages a Module, but generates a new Equipment card.",
+    image: ""
   },
   
   {
@@ -26,7 +28,8 @@ var skills = [
     name: "MacGyver",
     slots: [],
     target: "Equipment",
-    description: "Turns an Equipment card into a different Equipment card."
+    description: "Turns an Equipment card into a different Equipment card.",
+    image: ""
   },
   
   {
@@ -34,7 +37,8 @@ var skills = [
     name: "Quick Fix",
     slots: [],
     target: "Module",
-    description: "Completely solves a Crisis, but next turn the Module is on fire."
+    description: "Completely solves a Crisis, but next turn the Module is on fire.",
+    image: "QuickFix"
   },
   
   {
@@ -42,7 +46,8 @@ var skills = [
     name: "Reverse Engineer",
     slots: [],
     target: "Module",
-    description: "Change a Module into another random Module."
+    description: "Change a Module into another random Module.",
+    image: ""
   },
   
   {
@@ -50,7 +55,8 @@ var skills = [
     name: "Jettison",
     slots: [],
     target: "Module",
-    description: "Destroy a Module completely."
+    description: "Destroy a Module completely.",
+    image: ""
   },
   
   {
@@ -58,7 +64,8 @@ var skills = [
     name: "Evacuate",
     slots: ["Fire"],
     target: "Crisis",
-    description: "Suffocates Fires but may cause a Wall Breach."
+    description: "Suffocates Fires but may cause a Wall Breach.",
+    image: ""
   },
   
   {
@@ -66,7 +73,8 @@ var skills = [
     name: "Return",
     slots: [],
     target: "Module",
-    description: "Returns your Equipment to their Modules."
+    description: "Returns your Equipment to their Modules.",
+    image: ""
   }
 ];
 
@@ -80,19 +88,19 @@ var equipment = [
   },
   
   {
-    name: "Patch Kit",
+    name: "Wrench",
     slots: ["Damage"],
     description: "Repairs damaged stuff.",
     target: "Crisis",
-    image: ""
+    image: "Wrench"
   },
   
   {
-    name: "Electrical Kit",
+    name: "Wire Kit",
     slots: ["Short"],
     description: "Repairs electrical shorts.",
     target: "Crisis",
-    image: ""
+    image: "WireKit"
   },
   
   {
@@ -100,7 +108,15 @@ var equipment = [
     slots: [],
     description: "Becomes an Equipment card that can solve a current Crisis.",
     target: "",
-    image: ""
+    image: "3DPrinter"
+  },
+  
+  {
+    name: "Suit",
+    slots: [],
+    description: "If there's a Hull Breach, you can live for another turn.",
+    target: "",
+    image: "Suit"
   }
 ];
 
