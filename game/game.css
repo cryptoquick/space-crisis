@@ -1,0 +1,10 @@
+.messages {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.end_turn {
+  position: absolute;
+  top: 575px;
+  right: 5vw;
+}

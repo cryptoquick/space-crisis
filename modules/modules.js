@@ -1,122 +1,22 @@
 Modules = new Mongo.Collection("modules");
 Crises = new Mongo.Collection("crises");
 
-var modules = [
-  {
-    module_name: "Booster",
-    points: 100,
-    equipment: [
-        "Fire Extinguisher"
-    ],
-    image: "Booster",
-    has_crisis: false,
-    left: 2,
-    top: 0
+var card_actions = {
+  "3d_printer": function (card, crisis) {
+    
   },
-  
-  {
-    module_name: "Oxygen Recycle",
-    points: 100,
-    equipment: [],
-    image: "OxygenRecycle",
-    has_crisis: false,
-    left: 2,
-    top: 2
-  },
-  
-  {
-    module_name: "Seed Bank",
-    points: 100,
-    equipment: [],
-    image: "SeedBank",
-    has_crisis: false,
-    left: 5,
-    top: 1
-  },
-  
-  {
-    module_name: "Sleep Room",
-    points: 100,
-    equipment: [],
-    image: "SleepRoom",
-    has_crisis: false,
-    left: 3,
-    top: 1
-  },
-  
-  {
-    module_name: "Mechanical",
-    points: 100,
-    equipment: [],
-    image: "ToolBox",
-    has_crisis: false,
-    left: 2,
-    top: 1
-  },
-  
-  {
-    module_name: "Waste Recycle",
-    points: 100,
-    equipment: [],
-    image: "WasteRecycle",
-    has_crisis: false,
-    left: 1,
-    top: 1
-  },
-  
-  {
-    module_name: "Moisturizer",
-    points: 100,
-    equipment: [],
-    image: "Moisturizer",
-    has_crisis: false,
-    left: 0,
-    top: 1
-  },
-  
-  {
-    module_name: "Farm",
-    points: 100,
-    equipment: [],
-    image: "Farm",
-    has_crisis: false,
-    left: 4,
-    top: 1
+  "suit": function (card, crisis) {
+    
   }
-];
-
-var crises = [
-  {
-    name: "Electrical Fire",
-    turns: "2",
-    slots: [
-      {
-        type: "Fire",
-        solved: false
-      },
-      {
-        type: "Short",
-        solved: false
-      }
-    ]
-  },
-  
-  {
-    name: "Hull Damage",
-    turns: "3",
-    slots: [
-      {
-        type: "Damage",
-        solved: false
-      }
-    ]
-  }
-];
+}
 
 if (Meteor.isClient) {
   Template.board.helpers({
     modules: function () {
-      return Modules.find({});
+      var player = Players.findOne(Session.get('player_id'));
+      return Modules.find({
+        game: player.game
+      });
     }
   });
   
@@ -132,6 +32,9 @@ if (Meteor.isClient) {
     },
     pos: function () {
       return '"left:' + (this.left * 160) + 'px;top:' + (this.top * 160) + 'px'
+    },
+    clicked: function () {
+      return this.clicked;
     }
   });
   
@@ -140,17 +43,16 @@ if (Meteor.isClient) {
       if (Session.get("player_done", true)) return;
       
       var targeting_mode = Session.get("targeting_mode");
-      if (targeting_mode === "") {
-        if (!this.clicked) {
-          this.clicked = true;
-        } else {
-          this.clicked = false;
-        }
+      if (!targeting_mode) {
+        this.clicked = !this.clicked;
       } else if (targeting_mode === "Module") {
         // Logic for using a Skill/Equipment on a Module
         Session.set("targeting_mode", "");
         Session.set("player_done", true);
       }
+    },
+    "click .card": function () {
+      Session.set('active_crisis', null);
     },
     "mouseover .module": function () {
       Session.set('message', this.module_name);
@@ -161,36 +63,109 @@ if (Meteor.isClient) {
   });
   
   Template.crisis.events({
-    "click .crisis": function() {
-      if (Session.get("player_done", true)) return;
+    "click .crisis": function(evt) {
+      var card_id = Session.get('selected_card');
+      var crisis = this;
+      var crisis_id = crisis._id;
+      Session.set('active_crisis', crisis_id);
       
-      var targeting_mode = Session.get("targeting_mode");
-      if (targeting_mode === "") {
-        if (!this.clicked) {
-          this.clicked = true;
-        } else {
-          this.clicked = false;
-        }
-      } else if (targeting_mode === "Crisis") {
-        // Logic for using a Skill/Equipment on a Crisis
-        Session.set("targeting_mode", "");
-        Session.set("player_done", true);
+      if (card_id) {
+        var card = Hands.findOne(card_id);
+        var solved_slots = crisis.slots.map(function (crisis_slot) {
+          if (!crisis_slot.solved) {
+            // This needs to get the Skill or Equipment the player clicked on and compare its slot-fixers to the crisis' open slots
+            var slot_fixers = card.slots;
+            
+            if (slot_fixers) {
+              slot_fixers.forEach(function (card_slot) {
+                if (crisis_slot.type === card_slot) {
+                  crisis_slot.solved = true;
+                }
+              });
+              
+//               if (card.action) {
+//                 card_actions[card.action](card, crisis);
+//               }
+            }
+            
+            return crisis_slot;
+          }
+        });
+        Hands.remove(card_id);
+        Session.set('selected_card', null);
+        Crises.update(crisis_id, {
+          $set: {
+            slots: solved_slots
+          }
+        });
       }
     }
   })
+  
+  Template.crisis.helpers({
+    active_crisis: function() {
+      return Crises.find({
+        assigned_module: this._id
+      });
+    },
+    crisis_slot_style: function() {
+      if (this.solved) {
+        return "text-decoration: line-through;";
+      } else {
+        return "";
+      }
+    },
+    showing: function () {
+//       console.log('check_showing', this._id, Session.get('active_crisis'), Session.get('active_crisis') === this._id);
+      return Session.get('active_crisis') === this._id;
+    }
+  });
+  
+  Tracker.autorun(function () {
+    var solved_crises = Crises.find({
+      "slots.solved": true
+    }).fetch();
+    
+    console.log('solved_crises', solved_crises);
+    
+    solved_crises.map(function (crisis) {
+      console.log(crisis);
+      var is_solved = crisis.slots.reduce(function (prev, slot) {
+        if (!slot) {
+          prev = slot;
+        }
+        return prev;
+      }, true);
+      console.log('is_solved', is_solved);
+      if (is_solved) {
+        Modules.update(crisis.assigned_module, {
+          $set: {
+            has_crisis: false
+          }
+        });
+        
+        Crises.remove(crisis._id);
+        
+        var remaining_crises = Crises.find({
+          game: crisis.game
+        }).count();
+        
+        if (remaining_crises === 0) {
+          Meteor.call("end_current_turn", crisis.game);
+        }
+      }
+    });
+  });
 }
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // Clear
-    Modules.remove({});
-    Crises.remove({});
+//     Modules.remove({});
+//     Crises.remove({});
     // Populate
-    modules.map(function (module) {
-      Modules.insert(module);
-    });
-    crises.map(function (crisis) {
-      Crises.insert(crisis);
-    });
+//     modules.map(function (module) {
+//       Modules.insert(module);
+//     });
   });
 }

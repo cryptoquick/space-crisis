@@ -1,26 +1,28 @@
 Skills = new Mongo.Collection("skills");
 Equipment = new Mongo.Collection("equipment");
 
-var skills = [
+var skills = global_settings.skills = [
   {
     character: "Engineer",
     name: "Repair",
     slots: [
       "Short",
-      "Damage"
+      "Loose Bolts"
     ],
     target: "Crisis",
-    description: "Can repair shorts and/or damaged parts.",
-    image: ""
+    description: "Can repair shorts and/or loose bolts.",
+    image: "Repair",
+    action: ""
   },
   
-  {
+  /*{
     character: "Engineer",
     name: "Cannibalize",
     slots: [],
     target: "Module",
     description: "Damages a Module, but generates a new Equipment card.",
-    image: ""
+    image: "Cannibalize",
+    action: "cannibalize_skill"
   },
   
   {
@@ -29,7 +31,8 @@ var skills = [
     slots: [],
     target: "Equipment",
     description: "Turns an Equipment card into a different Equipment card.",
-    image: ""
+    image: "MacGyver",
+    action: "macgyver_skill"
   },
   
   {
@@ -38,7 +41,8 @@ var skills = [
     slots: [],
     target: "Module",
     description: "Completely solves a Crisis, but next turn the Module is on fire.",
-    image: "QuickFix"
+    image: "QuickFix",
+    action: "quickfix_skill"
   },
   
   {
@@ -47,7 +51,8 @@ var skills = [
     slots: [],
     target: "Module",
     description: "Change a Module into another random Module.",
-    image: ""
+    image: "ReverseEngineer",
+    action: "reverseengineer_skill"
   },
   
   {
@@ -56,43 +61,87 @@ var skills = [
     slots: [],
     target: "Module",
     description: "Destroy a Module completely.",
-    image: ""
-  },
+    image: "Jettison",
+    action: "jettison_skill"
+  },*/
   
   {
     character: "Pilot",
     name: "Evacuate",
     slots: ["Fire"],
     target: "Crisis",
-    description: "Suffocates Fires but may cause a Wall Breach.",
-    image: ""
+    description: "Suffocates Fires, but may cause a Hull Breach.",
+    image: "Evacuate",
+    action: "evacuate_skill"
   },
   
   {
+    character: "Pilot",
+    name: "Gum Up",
+    slots: ["Leak", "Metal Tear"],
+    target: "Crisis",
+    description: "Fixes leaks and metal tears.",
+    image: "Gum",
+    action: ""
+  },
+  
+  /*{
     character: "Pilot",
     name: "Return",
     slots: [],
     target: "Module",
     description: "Returns your Equipment to their Modules.",
-    image: ""
-  }
+    image: "Return",
+    action: "return_skill"
+  }*/
 ];
 
-var equipment = [
+var all_crises = ["Fire", "Loose Bolts", "Short", "Leak", "Metal Tear", "Hull Damage"];
+
+var equipment = global_settings.equipment = [
+  {
+    name: "Duct Tape",
+    slots: ["Leak"],
+    description: "Fixes leaks.",
+    target: "Crisis",
+    image: "DuctTape",
+    action: ""
+  },
+  
+  /*{
+    name: "Knife",
+    slots: [],
+    description: "Works on any problem, but can only repair one slot.",
+    target: "Crisis",
+    image: "Knife",
+    action: "swiss_knife"
+  },*/
+  
+  {
+    name: "Welder",
+    slots: ["Metal Tear"],
+    description: "Fixes metal tear.",
+    target: "Crisis",
+    image: "Welder",
+    action: ""
+  },
+  
   {
     name: "Extinguisher",
     slots: ["Fire"],
     description: "Puts out a fire.",
     target: "Crisis",
-    image: "FireExtinguisher"
+    image: "FireExtinguisher",
+    action: ""
   },
   
   {
     name: "Wrench",
-    slots: ["Damage"],
-    description: "Repairs damaged stuff.",
+    slots: ["Loose Bolts"],
+    description: "Fixes loose bolts.",
     target: "Crisis",
-    image: "Wrench"
+    image: "Wrench",
+    action: ""
   },
   
   {
@@ -100,15 +149,17 @@ var equipment = [
     slots: ["Short"],
     description: "Repairs electrical shorts.",
     target: "Crisis",
-    image: "WireKit"
+    image: "WireKit",
+    action: ""
   },
   
-  {
+  /*{
     name: "3D Printer",
     slots: [],
     description: "Becomes an Equipment card that can solve a current Crisis.",
     target: "",
-    image: "3DPrinter"
+    image: "3DPrinter",
+    action: "3d_printer"
   },
   
   {
@@ -116,7 +167,17 @@ var equipment = [
     slots: [],
     description: "If there's a Hull Breach, you can live for another turn.",
     target: "",
-    image: "Suit"
+    image: "Suit",
+    action: "suit"
+  },*/
+  
+  {
+    name: "Patch Kit",
+    slots: ["Hull Damage"],
+    description: "Fixes hull damage.",
+    target: "Crisis",
+    image: "PatchKit",
+    action: ""
   }
 ];
 

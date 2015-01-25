@@ -1,15 +1,20 @@
 <template name="start_screen">
   <h1>Space Crisis 1972</h1>
-  <button class="new_game">New Game</button>
-  {{>games_list}}
+  {{#unless slots_available}}
+    <button class="new_game">New Game</button>
+  {{/unless}}
+  <div class="current_games">
+    <h2>Current Games</h2>
+    {{>games_list}}
+  </div>
 </template>
 
 <template name="games_list">
-  <div class="games">
+  <ol class="games">
     {{#each game_instances}}
-      {{>game_instance}}
+      <li>{{>game_instance}}</li>
     {{/each}}
-  </div>
+  </ol>
 </template>
 
 <template name="game_instance">
@@ -20,7 +25,7 @@
         {{>class_selector}}
       {{/each}}
     {{else}}
-      {{turn_count}}
+      In Progress. Turn: {{turn_count}}
     {{/unless}}
   </div>
 </template>
@@ -34,5 +39,11 @@
 </template> -->
 
 <template name="class_selector">
-  <button class="player_selector" disabled="{{started}}">{{character}}</button>
+  <div class="player_selector">
+    <img src="ui/{{image}}.png">
+    {{#if started}}
+      &#10003;
+    {{/if}}
+    <h2>{{character}}</h2>
+  </div>
 </template>

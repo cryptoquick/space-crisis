@@ -19,18 +19,25 @@ if (Meteor.isClient) {
   
   Template.skill_card.events({
     "click .skill": function() {
-      if (Session.get("player_done", true)) return;
+      Session.set('selected_card', this._id);
       
-      var targeting_mode = Session.get("targeting_mode");
-      if (targeting_mode === "") {
-        if (!this.clicked) {
-          this.clicked = true;
-          Session.set("targeting_mode", this.target);
-        } else {
-          this.clicked = false;
-          Session.set("targeting_mode", "");
-        }
-      }
+//       if (Session.get("player_done", true)) return;
+      
+//       var targeting_mode = Session.get("targeting_mode");
+//       if (targeting_mode === "") {
+//         if (!this.clicked) {
+//           this.clicked = true;
+//           Session.set("targeting_mode", this.target);
+//           Session.set("active_action", {
+//             slots: this.slots,
+//             action: this.action
+//           });
+//         } else {
+//           this.clicked = false;
+//           Session.set("targeting_mode", "");
+//           Session.set("active_action", "");
+//         }
+//       }
     }
   });
   
@@ -46,22 +53,33 @@ if (Meteor.isClient) {
   
   Template.equipment_card.events({
     "click .equipment": function() {
-      if (Session.get("player_done", true)) return;
+      Session.set('selected_card', this._id);
       
-      var targeting_mode = Session.get("targeting_mode");
-      if (targeting_mode === "") {
-        if (!this.clicked) {
-          this.clicked = true;
-          Session.set("targeting_mode", this.target);
-        } else {
-          this.clicked = false;
-          Session.set("targeting_mode", "");
-        }
-      } else if (targeting_mode === "Equipment") {
-        // Logic for targeting Equipment with Skills/other Equipment
-        Session.set("targeting_mode", "");
-        Session.set("player_done", true);
-      }
+//       if (Session.get("player_done", true)) return;
+      
+//       var targeting_mode = Session.get("targeting_mode");
+//       if (targeting_mode === "") {
+//         if (!this.clicked) {
+//           this.clicked = true;
+//           Session.set("targeting_mode", this.target);
+//           Session.set("active_action", {
+//             slots: this.slots,
+//             action: this.action
+//           });
+//         } else {
+//           this.clicked = false;
+//           Session.set("targeting_mode", "");
+//           Session.set("active_action", {
+//             slots: this.slots,
+//             action: this.action
+//           });
+//         }
+//       } else if (targeting_mode === "Equipment") {
+//         // Logic for targeting Equipment with Skills/other Equipment
+//         Session.set("targeting_mode", "");
+//         Session.set("player_done", true);
+//         Session.set("active_action", "");
+//       }
     }
   });
   

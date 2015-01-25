@@ -1,0 +1,45 @@
+.start_screen {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding-top: 30vh;
+}
+
+.start_screen h1 {
+  color: white;
+  font-size: 32px;
+  margin-bottom: 24px;
+}
+
+.start_screen h2 {
+  color: white;
+}
+
+.start_screen .current_games {
+  border: 1px solid white;
+  width: 250px;
+  margin: 0 auto;
+  overflow: auto;
+}
+
+.start_screen li {
+  color: white;
+  overflow: auto;
+}
+
+.start_screen button {
+  border: solid 1px white;
+  background-color: black;
+  color: white;
+  border-radius: 5px;
+  padding: 30px;
+  font-size: 24px;
+  margin: 16px;
+}
+
+.start_screen .player_selector {
+  float: left;
+  padding: 10px;
+}

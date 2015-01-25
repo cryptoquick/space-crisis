@@ -5,14 +5,14 @@
 </template>
 
 <template name="module">
-  <div class="module card" style="{{pos}}">
+  <div class="module {{solar}} module-{{border}}" style="{{pos}}">
     <img src="modules/{{image}}.png"/>
     {{#if has_crisis}}
       {{>crisis}}
     {{/if}}
   </div>
   {{#if clicked}}
-    <div class="module details">
+    <div class="module-details" style="{{pos}}">
       <h2>Points: {{points}}</h2>
       {{print_equipment}}
     </div>
@@ -20,13 +20,18 @@
 </template>
 
 <template name="crisis">
-  <div class="crisis">
-    <img src="modules/Crisis.png"/>
-  </div>
-  {{#if clicked}}
-    {{>crisis_details}}
-  {{/if}}
-</template>
-
-<template name="crisis_details">
+  {{#each active_crisis}}
+    <div class="crisis">
+      <img src="ui/Crisis.png">
+    </div>
+    {{#if showing}}
+      <div class="card">
+        <h1>{{name}}</h1>
+        <h2>{{turns}} turns remaining.</h2>
+        {{#each slots}}
+          <h2 class="{{crisis_slot_style}}">{{type}}</h2>
+        {{/each}}
+      </div>
+    {{/if}}
+  {{/each}}
 </template>
